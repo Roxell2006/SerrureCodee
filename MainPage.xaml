@@ -1,0 +1,14 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="SerrureCodee.MainPage"
+             BackgroundColor="{DynamicResource SecondaryColor}">
+
+    <Grid RowSpacing="5" ColumnSpacing="5"
+        ColumnDefinitions="60,60,60,60" 
+        RowDefinitions="70,30,70,70,70,70"
+        HorizontalOptions="CenterAndExpand"
+        VerticalOptions="CenterAndExpand"
+        x:Name="GameGrid">
+    </Grid>
+        
+</ContentPage>
