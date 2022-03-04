@@ -2,7 +2,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="SerrureCodee.MainPage"
              BackgroundColor="{DynamicResource SecondaryColor}">
-    <StackLayout>
+    
         <Grid RowSpacing="5" ColumnSpacing="5"
             ColumnDefinitions="60,60,60,60" 
             RowDefinitions="70,30,70,70,70,70,30,50"
@@ -14,6 +14,4 @@
             
         </Grid>
         
-
-    </StackLayout>
 </ContentPage>
