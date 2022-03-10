@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using Microsoft.Maui.Controls;
 using Microsoft.Maui.Controls.Shapes;
 using Microsoft.Maui.Graphics;
@@ -10,6 +11,7 @@ namespace SerrureCodee
         Random rand = new Random();
         int code = 0;
         int chance = 0;
+        int score = 0;
         Label[,] label = new Label[4, 5];
 
         public MainPage()
@@ -50,7 +52,6 @@ namespace SerrureCodee
                     GameGrid.Children.Add(label[c, r]);
                 }
             }
-
             //mise à jour de la grid dans la ContentPage;
             Content = GameGrid;
         }
@@ -90,6 +91,7 @@ namespace SerrureCodee
                     // vérifie si le code contient 4 chiffres
                     if (EntryCode.Text.Length == 4)
                     {
+                        //"D4" permet de formater la chaine avec 4 chiffres (ajoute des 0 devant) ex 0576
                         VerifieCode(code.ToString("D4"), EntryCode.Text);
                         EntryCode.Text = null;
                     }
@@ -102,26 +104,60 @@ namespace SerrureCodee
             }
         }
 
-        void VerifieCode(string code, string proposition)
+        async void VerifieCode(string code, string proposition)
         {
             for(int i = 0; i< 4; i++)
             {
                 if (code.Contains(proposition[i]))
                 {
                     if (code[i] == proposition[i])
-                        label[i, 0].Text = code[i].ToString();          // Dévoile les bons chiffres
+                        label[i, 0].Text = code[i].ToString();  // Dévoile les bons chiffres
                     else
-                        AfficheCercle(i, chance);                       // Entoure le chiffre mal placé
+                        AfficheCercle(i, chance);               // Entoure le chiffre mal placé
                 }
             }
             if(code == proposition)
-                DisplayAlert("Vous avez Gagné", "Le code était: " + code, "OK");
+            {
+                score += (4 - chance) * 10;
+                bool response = await DisplayAlert("Vous Avez Gagné !", "Votre Score: " + score + "\nVoulez-vous rejouer? ", "Oui", "Non");
+                if (response)
+                    Init();
+                else
+                    chance = 4;
+            }
             else
             {
                 chance++;
                 if (chance == 4)
-                    DisplayAlert("Vous avez perdu", "Le code était: " + code, "OK");
+                {
+                    bool response = await DisplayAlert("Vous Avez Perdu !", "Le code était: " + code + "\nVoulez-vous rejouer? ", "Oui", "Non");
+                    if (response)
+                        Init();
+                }
             }
+        }
+
+        void Init()
+        {
+            // tire un code aléatoire entre 0 et 9999
+            code = rand.Next(10000);
+            // vide tous les label
+            for (int i=0; i< 4; i++)
+            {
+                for(int j=0; j< 5; j++)
+                {
+                    label[i, j].Text = "";
+                }
+            }
+            // Efface les Ellipse
+            // On excécute la boucle à l'envert avec Reverse() pour éviter des erreurs comme on supprime des éléments à l'intérieur de la boucle
+            // LinQ permet de rechercher par Type, on recherche donc un élément de Type Ellipse, si trouvé on l'efface
+            foreach (var i in GameGrid.Children.Reverse().Where(x => x.GetType() == typeof(Ellipse)))
+            {
+                GameGrid.Children.Remove(i);
+            }
+            // réinitialise les variables:
+            chance = 0;
         }
     }
 }
